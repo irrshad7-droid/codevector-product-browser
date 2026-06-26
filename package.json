@@ -1,0 +1,32 @@
+{
+  "name": "codevector-product-browser",
+  "version": "1.0.0",
+  "description": "Product browser API with keyset pagination over PostgreSQL",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:seed": "node scripts/seed.js"
+  },
+  "prisma": {
+    "seed": "node scripts/seed.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.9.0"
+  }
+}

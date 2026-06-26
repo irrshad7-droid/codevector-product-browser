@@ -1,0 +1,36 @@
+// Prisma schema — Product catalog (Phase 3)
+// DB: PostgreSQL (Neon). Single model; indexes match keyset pagination access patterns.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  // BIGINT identity: compact indexes and simple keyset tie-breaker (vs UUID).
+  id        BigInt   @id @default(autoincrement())
+
+  name      String   @db.VarChar(255)
+  category  String   @db.VarChar(100)
+
+  // Stored as integer cents — exact money in JS/DB, no float rounding.
+  price     Int
+
+  // Immutable after insert: primary sort key for stable keyset pagination.
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Tracks row changes; returned in API but NOT used for list sort order.
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Unfiltered browse: ORDER BY created_at DESC, id DESC + keyset cursor.
+  @@index([createdAt(sort: Desc), id(sort: Desc)])
+
+  // Category filter + same sort/cursor pattern within one category.
+  @@index([category, createdAt(sort: Desc), id(sort: Desc)])
+
+  @@map("products")
+}
